@@ -30,6 +30,16 @@ func Init(cfg *config.Config) {
 	http.ListenAndServe(fmt.Sprintf("%s:%d", cfg.HTTPServer.Address, cfg.HTTPServer.Port), nil)
 }
 
+func getScheme(r *http.Request) string {
+	if proto := r.Header.Get("X-Forwarded-Proto"); proto != "" {
+		return proto
+	}
+	if r.TLS != nil {
+		return "https"
+	}
+	return "http"
+}
+
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	switch r.Method {
@@ -58,7 +68,8 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		slog.Info(fmt.Sprintf("Short URL: %v", urlMap))
 		// TODO: подумать, как лучше формировать хост, из запроса или из конфига
 		host := r.Host
-		w.Write([]byte(host + "/" + id))
+		scheme := getScheme(r)
+		w.Write([]byte(fmt.Sprintf("%s://%s/%s", scheme, host, id)))
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
