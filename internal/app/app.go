@@ -41,8 +41,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 			return
 		}
-		w.Header().Set("Status", "404")
-		w.Write([]byte("Not found"))
+		http.NotFound(w, r)
 
 	case http.MethodPost:
 		url := r.Body
@@ -57,6 +56,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		id := generateID()
 		urlMap[id] = urlStr
 		slog.Info(fmt.Sprintf("Short URL: %v", urlMap))
+		// TODO: подумать, как лучше формировать хост, из запроса или из конфига
 		host := r.Host
 		w.Write([]byte(host + "/" + id))
 	default:
