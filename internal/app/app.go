@@ -69,6 +69,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		// TODO: подумать, как лучше формировать хост, из запроса или из конфига
 		host := r.Host
 		scheme := getScheme(r)
+		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte(fmt.Sprintf("%s://%s/%s", scheme, host, id)))
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
