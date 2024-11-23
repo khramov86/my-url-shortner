@@ -1,6 +1,6 @@
 module github.com/khramov86/my-url-shortner
 
-go 1.23.1
+go 1.22
 
 require github.com/ilyakaznacheev/cleanenv v1.5.0
 
