@@ -1,0 +1,4 @@
+log_level: debug
+http_server:
+  address: "localhost"
+  port: 8080
